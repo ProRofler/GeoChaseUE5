@@ -14,8 +14,8 @@ class GEOCHASE_API AGCGameStateBase : public AGameStateBase
 
 
 public:
-    UFUNCTION(BlueprintCallable, Reliable, Server)
-    void Server_TryAction(APlayerController* RequestingPlayer);
+    UFUNCTION(BlueprintCallable)
+    void TryAction(APlayerController* RequestingPlayer);
 
 protected:
     bool bCanDoAction = true;

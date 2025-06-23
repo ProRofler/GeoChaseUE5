@@ -20,7 +20,7 @@ void AGCGameStateBase::Multicast_MakeAction_Implementation(APlayerController* Re
     }
 }
 
-void AGCGameStateBase::Server_TryAction_Implementation(APlayerController* RequestingPlayer)
+void AGCGameStateBase::TryAction(APlayerController* RequestingPlayer)
 {
 
     if (!bCanDoAction) {
