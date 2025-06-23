@@ -15,17 +15,5 @@ class GEOCHASE_API AGCGameModeBase : public AGameModeBase
     GENERATED_BODY()
 
 public:
-    UFUNCTION(BlueprintCallable, Reliable, Server)
-    void Server_TryAction(APlayerController* RequestingPlayer);
-
-protected:
-    bool bCanDoAction = true;
-    FTimerHandle ActionCooldownHandle;
-
-    UFUNCTION(NetMulticast, Reliable)
-    void Multicast_MakeAction();
-
-    void ResetCooldown();
-
-
+    AGCGameModeBase();
 };

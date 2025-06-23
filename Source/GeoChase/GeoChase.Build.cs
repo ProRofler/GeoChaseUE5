@@ -4,13 +4,13 @@ using UnrealBuildTool;
 
 public class GeoChase : ModuleRules
 {
-	public GeoChase(ReadOnlyTargetRules Target) : base(Target)
-	{
-		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
+    public GeoChase(ReadOnlyTargetRules Target) : base(Target)
+    {
+        PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PrivateDependencyModuleNames.AddRange(new string[] {  });
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
+
+        PrivateDependencyModuleNames.AddRange(new string[] { });
 
         PublicIncludePaths.AddRange(new string[] { "GeoChase/Public" });
 
