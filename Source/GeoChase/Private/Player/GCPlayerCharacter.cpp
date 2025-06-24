@@ -5,7 +5,7 @@
 #include "Camera/CameraComponent.h"
 #include "Gameplay/GCChaseTargetBase.h"
 #include "GameModes/GCGameStateBase.h"
-
+#include "Components/StaticMeshComponent.h"
 
 
 
@@ -18,6 +18,14 @@ AGCPlayerCharacter::AGCPlayerCharacter()
     PlayerCamera->bUsePawnControlRotation = true;
 
     GetMesh()->SetOwnerNoSee(true);
+
+    ChaseTargetMesh = CreateDefaultSubobject<UStaticMeshComponent>("Chase mesh component");
+    ChaseTargetMesh->SetupAttachment(PlayerCamera);
+    //ChaseTargetMesh->AttachToComponent(PlayerCamera, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+    ChaseTargetMesh->SetRelativeLocation(FVector(30.f, 10.f, -10.f));
+    ChaseTargetMesh->SetRelativeScale3D(FVector(0.05f));
+    ChaseTargetMesh->SetOnlyOwnerSee(true);
+    ChaseTargetMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 }
 
 void AGCPlayerCharacter::Server_DoAction_Implementation()
@@ -25,7 +33,6 @@ void AGCPlayerCharacter::Server_DoAction_Implementation()
     LaunchCharacter(GetActorForwardVector() * 5000, false, false);
 }
 
-PRAGMA_ENABLE_OPTIMIZATION
 void AGCPlayerCharacter::BeginPlay()
 {
     Super::BeginPlay();
@@ -34,28 +41,15 @@ void AGCPlayerCharacter::BeginPlay()
 
     if (auto GCGameState = GetWorld()->GetGameState<AGCGameStateBase>()) {
 
-        FActorSpawnParameters SpawnParams;
-        SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-        SpawnParams.Owner = this;
-
-
-
-        auto ChaseTarget = GetWorld()->SpawnActor<AGCChaseTargetBase>(ChaseTargetClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
-
-        if (ChaseTarget)
+        if (auto ChaseTargetMeshComponent = ChaseTargetClass->GetDefaultObject<AGCChaseTargetBase>()->GetBaseMesh())
         {
-            ChaseTarget->SetActorEnableCollision(false);
-            ChaseTarget->GetBaseMesh()->SetOnlyOwnerSee(true);
-
-            ChaseTarget->AttachToComponent(PlayerCamera, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-            ChaseTarget->SetActorRelativeLocation(FVector(30.f, 10.f, -10.f));
+            ChaseTargetMesh->SetStaticMesh(ChaseTargetMeshComponent->GetStaticMesh());
         }
 
-        GCGameState->GetCanDoAction() ? ChaseTarget->GetRootComponent()->SetVisibility(true) : ChaseTarget->GetRootComponent()->SetVisibility(false);
+        GCGameState->GetCanDoAction() ? ChaseTargetMesh->SetVisibility(true) : ChaseTargetMesh->SetVisibility(false);
     }
 
 }
-PRAGMA_DISABLE_OPTIMIZATION
 
 void AGCPlayerCharacter::Tick(float DeltaTime)
 {

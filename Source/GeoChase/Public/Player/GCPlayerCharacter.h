@@ -24,6 +24,10 @@ public:    // Sets default values for this character's properties
     UFUNCTION(Server, Reliable, BlueprintCallable)
     void Server_DoAction();
 
+    virtual void Tick(float DeltaTime) override;
+
+    virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
 protected:
     virtual void BeginPlay() override;
 
@@ -33,9 +37,9 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GC Chase target")
     TSubclassOf<AGCChaseTargetBase> ChaseTargetClass;
 
-public:
-    virtual void Tick(float DeltaTime) override;
+private:
+    UPROPERTY()
+    TObjectPtr<class UStaticMeshComponent> ChaseTargetMesh;
 
-    virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 };
