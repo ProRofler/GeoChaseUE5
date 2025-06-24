@@ -49,7 +49,7 @@ void AGCGameStateBase::TryAction(APlayerController* RequestingPlayer)
             {
                 SetCanDoAction(true);
             }), // 
-        5.0f, // 
+        3.0f, // 
         false);
 
 

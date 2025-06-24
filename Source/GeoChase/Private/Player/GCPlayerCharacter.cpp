@@ -13,6 +13,8 @@ AGCPlayerCharacter::AGCPlayerCharacter()
     PlayerCamera = CreateDefaultSubobject<UCameraComponent>("Player camera");
     PlayerCamera->SetupAttachment(GetRootComponent());
     PlayerCamera->bUsePawnControlRotation = true;
+
+    GetMesh()->SetOwnerNoSee(true);
 }
 
 void AGCPlayerCharacter::Server_DoAction_Implementation()
