@@ -41,6 +41,8 @@ void AGCPlayerCharacter::BeginPlay()
 
     if (auto GCGameState = GetWorld()->GetGameState<AGCGameStateBase>()) {
 
+        GCGameState->OnCanDoActionChanged.AddDynamic(this, &ThisClass::HandleChaseTargetMeshVisibility);
+
         if (auto ChaseTargetMeshComponent = ChaseTargetClass->GetDefaultObject<AGCChaseTargetBase>()->GetBaseMesh())
         {
             ChaseTargetMesh->SetStaticMesh(ChaseTargetMeshComponent->GetStaticMesh());
@@ -49,6 +51,11 @@ void AGCPlayerCharacter::BeginPlay()
         GCGameState->GetCanDoAction() ? ChaseTargetMesh->SetVisibility(true) : ChaseTargetMesh->SetVisibility(false);
     }
 
+}
+
+void AGCPlayerCharacter::HandleChaseTargetMeshVisibility(const bool NewVisibility)
+{
+    ChaseTargetMesh->SetVisibility(NewVisibility);
 }
 
 void AGCPlayerCharacter::Tick(float DeltaTime)

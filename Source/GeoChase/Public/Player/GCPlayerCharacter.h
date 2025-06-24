@@ -41,5 +41,8 @@ private:
     UPROPERTY()
     TObjectPtr<class UStaticMeshComponent> ChaseTargetMesh;
 
+    UFUNCTION()
+    void HandleChaseTargetMeshVisibility(const bool NewVisibility);
+
 
 };

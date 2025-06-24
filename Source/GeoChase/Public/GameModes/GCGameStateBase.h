@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
+
+//
 #include "GCGameStateBase.generated.h"
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnBooleanChanged, bool)
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBooleanChanged, bool, NewValue);
 
 UCLASS()
 class GEOCHASE_API AGCGameStateBase : public AGameStateBase
@@ -17,6 +19,7 @@ class GEOCHASE_API AGCGameStateBase : public AGameStateBase
 public:
     AGCGameStateBase();
 
+    UPROPERTY(BlueprintAssignable)
     FOnBooleanChanged OnCanDoActionChanged;
 
     UFUNCTION(BlueprintCallable)
