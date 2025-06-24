@@ -9,6 +9,14 @@ AGCChaseTargetBase::AGCChaseTargetBase()
     BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>("Object mesh");
     SetRootComponent(BaseMesh);
 
+    BaseMesh->SetSimulatePhysics(true);
+    BaseMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    BaseMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+    BaseMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+
+    bReplicates = true;
+    SetReplicateMovement(true);
+
     PrimaryActorTick.bCanEverTick = false;
 }
 

@@ -18,7 +18,7 @@ class GEOCHASE_API AGCPlayerCharacter : public ACharacter
 
     GENERATED_BODY()
 
-public:    // Sets default values for this character's properties
+public:
     AGCPlayerCharacter();
 
     UFUNCTION(Server, Reliable, BlueprintCallable)

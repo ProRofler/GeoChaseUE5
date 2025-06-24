@@ -23,14 +23,39 @@ AGCPlayerCharacter::AGCPlayerCharacter()
     ChaseTargetMesh->SetupAttachment(PlayerCamera);
     //ChaseTargetMesh->AttachToComponent(PlayerCamera, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
     ChaseTargetMesh->SetRelativeLocation(FVector(30.f, 10.f, -10.f));
-    ChaseTargetMesh->SetRelativeScale3D(FVector(0.05f));
     ChaseTargetMesh->SetOnlyOwnerSee(true);
     ChaseTargetMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 }
 
 void AGCPlayerCharacter::Server_DoAction_Implementation()
 {
-    LaunchCharacter(GetActorForwardVector() * 5000, false, false);
+    if (GetWorld() && ChaseTargetClass) {
+
+        FTransform SpawnTransform;
+        SpawnTransform.SetLocation(PlayerCamera->GetComponentLocation() + PlayerCamera->GetForwardVector() * 50.f);
+
+
+        AGCChaseTargetBase* SpawnedChaseTarget = GetWorld()->SpawnActorDeferred<AGCChaseTargetBase>(ChaseTargetClass.Get(), SpawnTransform);
+
+        if (SpawnedChaseTarget) {
+            SpawnedChaseTarget->GetBaseMesh()->AddImpulse(PlayerCamera->GetForwardVector() * 1000.f);
+            SpawnedChaseTarget->FinishSpawning(SpawnTransform);
+
+            //
+            FTimerHandle DestroyTimerHandle;
+            GetWorldTimerManager().SetTimer(DestroyTimerHandle, //
+                FTimerDelegate::CreateLambda([SpawnedChaseTarget]()
+                    {
+                        SpawnedChaseTarget->Destroy();
+                    }), // 
+                3.0f, // 
+                false);
+
+        }
+
+
+
+    }
 }
 
 void AGCPlayerCharacter::BeginPlay()
@@ -46,6 +71,8 @@ void AGCPlayerCharacter::BeginPlay()
         if (auto ChaseTargetMeshComponent = ChaseTargetClass->GetDefaultObject<AGCChaseTargetBase>()->GetBaseMesh())
         {
             ChaseTargetMesh->SetStaticMesh(ChaseTargetMeshComponent->GetStaticMesh());
+            ChaseTargetMesh->SetRelativeScale3D(FVector(ChaseTargetMeshComponent->GetRelativeScale3D()));
+
         }
 
         GCGameState->GetCanDoAction() ? ChaseTargetMesh->SetVisibility(true) : ChaseTargetMesh->SetVisibility(false);
