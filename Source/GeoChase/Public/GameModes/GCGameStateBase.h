@@ -6,6 +6,7 @@
 #include "GameFramework/GameStateBase.h"
 #include "GCGameStateBase.generated.h"
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnBooleanChanged, bool)
 
 UCLASS()
 class GEOCHASE_API AGCGameStateBase : public AGameStateBase
@@ -14,14 +15,34 @@ class GEOCHASE_API AGCGameStateBase : public AGameStateBase
 
 
 public:
+    AGCGameStateBase();
+
+    FOnBooleanChanged OnCanDoActionChanged;
+
     UFUNCTION(BlueprintCallable)
     void TryAction(APlayerController* RequestingPlayer);
 
+    virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 protected:
+    virtual void Tick(float DeltaTime) override;
+
+
+private:
+    UPROPERTY(ReplicatedUsing = OnRep_bCanDoAction)
     bool bCanDoAction = true;
+
     FTimerHandle ActionCooldownHandle;
 
     UFUNCTION(NetMulticast, Reliable)
     void Multicast_MakeAction(APlayerController* RequestingPlayer);
+
+
+    void SetCanDoAction(const bool bCanDoAction);
+
+    UFUNCTION()
+    void OnRep_bCanDoAction(bool OldBCanDoAction);
+
+
 
 };

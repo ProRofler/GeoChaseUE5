@@ -2,46 +2,90 @@
 
 
 #include "GameModes/GCGameStateBase.h"
+#include "GameFramework/Character.h"
+#include "Net/UnrealNetwork.h"
+
+
+
+AGCGameStateBase::AGCGameStateBase()
+{
+    bReplicates = true;
+    NetUpdateFrequency = 100.f;
+}
 
 
 void AGCGameStateBase::Multicast_MakeAction_Implementation(APlayerController* RequestingPlayer)
 {
-    for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
-    {
-        if (APlayerController* PC = Iterator->Get())
-        {
-            if (APawn* Pawn = PC->GetPawn())
-            {
-                if (GEngine) {
-                    GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, TEXT("Action!"));
-                }
-            }
-        }
+
+    if (RequestingPlayer && GEngine && RequestingPlayer->IsLocalController()) {
+        GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, FString::Printf(TEXT("%s action!"), *RequestingPlayer->GetCharacter()->GetName()));
+
+        ACharacter* PlayerCharacter = RequestingPlayer->GetCharacter();
+
+        PlayerCharacter->LaunchCharacter((PlayerCharacter->GetActorForwardVector() * 5000), false, false);
     }
+
 }
 
 void AGCGameStateBase::TryAction(APlayerController* RequestingPlayer)
 {
 
     if (!bCanDoAction) {
-        if (GEngine) {
-            GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("Wait for cooldown!"));
+        if (GEngine && RequestingPlayer && RequestingPlayer->IsLocalController()) {
+            GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, FString::Printf(TEXT("%s wait for cooldown!"), *RequestingPlayer->GetCharacter()->GetName()));
+
         }
         return;
     }
 
-    bCanDoAction = false;
+    SetCanDoAction(false);
 
     Multicast_MakeAction(RequestingPlayer);
 
     GetWorldTimerManager().SetTimer(ActionCooldownHandle, //
         FTimerDelegate::CreateLambda([&]()
             {
-                bCanDoAction = true;
+                SetCanDoAction(true);
             }), // 
-        2.0f, // 
+        5.0f, // 
         false);
 
 
+}
+
+void AGCGameStateBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(AGCGameStateBase, bCanDoAction);
+}
+
+void AGCGameStateBase::Tick(float DeltaTime)
+{
+    if (GEngine) {
+        GEngine->AddOnScreenDebugMessage(25, 2.f, FColor::Green, FString::Printf(TEXT("Can do action -- %b"), bCanDoAction));
+    }
+
+}
+
+void AGCGameStateBase::SetCanDoAction(const bool CanDoAction)
+{
+
+    bCanDoAction = CanDoAction;
+
+    if (OnCanDoActionChanged.IsBound())
+    {
+        OnCanDoActionChanged.Broadcast(bCanDoAction);
+    }
+
+
+}
+
+void AGCGameStateBase::OnRep_bCanDoAction(bool OldBCanDoAction)
+{
+    if (OnCanDoActionChanged.IsBound())
+    {
+        OnCanDoActionChanged.Broadcast(bCanDoAction);
+    }
 }
 
