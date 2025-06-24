@@ -20,6 +20,9 @@ class GEOCHASE_API AGCPlayerCharacter : public ACharacter
 public:    // Sets default values for this character's properties
     AGCPlayerCharacter();
 
+    UFUNCTION(Server, Reliable, BlueprintCallable)
+    void Server_DoAction();
+
 protected:
     virtual void BeginPlay() override;
 

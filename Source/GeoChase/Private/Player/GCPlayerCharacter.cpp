@@ -15,6 +15,11 @@ AGCPlayerCharacter::AGCPlayerCharacter()
     PlayerCamera->bUsePawnControlRotation = true;
 }
 
+void AGCPlayerCharacter::Server_DoAction_Implementation()
+{
+    LaunchCharacter(GetActorForwardVector() * 5000, false, false);
+}
+
 void AGCPlayerCharacter::BeginPlay()
 {
     Super::BeginPlay();

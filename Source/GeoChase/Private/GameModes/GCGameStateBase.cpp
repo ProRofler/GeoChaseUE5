@@ -2,7 +2,8 @@
 
 
 #include "GameModes/GCGameStateBase.h"
-#include "GameFramework/Character.h"
+#include "Player/GCPlayerCharacter.h"
+
 #include "Net/UnrealNetwork.h"
 
 
@@ -20,9 +21,10 @@ void AGCGameStateBase::Multicast_MakeAction_Implementation(APlayerController* Re
     if (RequestingPlayer && GEngine && RequestingPlayer->IsLocalController()) {
         GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, FString::Printf(TEXT("%s action!"), *RequestingPlayer->GetCharacter()->GetName()));
 
-        ACharacter* PlayerCharacter = RequestingPlayer->GetCharacter();
-
-        PlayerCharacter->LaunchCharacter((PlayerCharacter->GetActorForwardVector() * 5000), false, false);
+        if (auto PlayerCharacter = Cast<AGCPlayerCharacter>(RequestingPlayer->GetCharacter()))
+        {
+            PlayerCharacter->Server_DoAction();
+        }
     }
 
 }
