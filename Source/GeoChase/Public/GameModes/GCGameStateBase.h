@@ -25,6 +25,9 @@ public:
     UFUNCTION(BlueprintCallable)
     void TryAction(APlayerController* RequestingPlayer);
 
+    UFUNCTION(BlueprintCallable)
+    void ResetAction(AController* RequestingController);
+
     UFUNCTION(BlueprintPure)
     FORCEINLINE bool GetCanDoAction() const { return bCanDoAction; }
 

@@ -25,6 +25,8 @@ struct FEnhancedInputData
     UInputAction* MoveAction = nullptr;
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
     UInputAction* LookAction = nullptr;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
+    UInputAction* SwitchAction = nullptr;
 
 };
 

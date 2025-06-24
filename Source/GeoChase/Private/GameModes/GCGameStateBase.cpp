@@ -44,15 +44,13 @@ void AGCGameStateBase::TryAction(APlayerController* RequestingPlayer)
 
     Multicast_MakeAction(RequestingPlayer);
 
-    GetWorldTimerManager().SetTimer(ActionCooldownHandle, //
-        FTimerDelegate::CreateLambda([&]()
-            {
-                SetCanDoAction(true);
-            }), // 
-        3.0f, // 
-        false);
+}
 
+void AGCGameStateBase::ResetAction(AController* RequestingController)
+{
+    if (bCanDoAction) return;
 
+    SetCanDoAction(true);
 }
 
 void AGCGameStateBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

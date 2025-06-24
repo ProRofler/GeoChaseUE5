@@ -4,6 +4,7 @@
 #include "Gameplay/GCChaseTargetBase.h"
 #include "Components/SphereComponent.h"
 #include "Player/GCPlayerCharacter.h"
+#include "GameModes/GCGameStateBase.h"
 
 
 
@@ -35,7 +36,6 @@ void AGCChaseTargetBase::BeginPlay()
         CollisionSphere->SetSphereRadius(BaseMesh->GetStaticMesh()->GetBounds().BoxExtent.Size() * 1.5f);
 
         CollisionSphere->OnComponentBeginOverlap.AddDynamic(this, &AGCChaseTargetBase::OnBeginOverlap);
-        CollisionSphere->OnComponentEndOverlap.AddDynamic(this, &AGCChaseTargetBase::OnOverlapEnd);
 
     }
 
@@ -43,17 +43,19 @@ void AGCChaseTargetBase::BeginPlay()
 
 void AGCChaseTargetBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    if (Cast<AGCPlayerCharacter>(OtherActor)) {
-        UE_LOG(LogTemp, Warning, TEXT("Overlapping!"));
+    if (!HasAuthority()) return;
+
+    if (auto GCGameState = GetWorld()->GetGameState<AGCGameStateBase>()) {
+
+        if (auto Character = Cast<AGCPlayerCharacter>(OtherActor)) {
+            UE_LOG(LogTemp, Warning, TEXT("Overlapping!"));
+
+            GCGameState->ResetAction(Character->GetController());
+            Destroy();
+        }
     }
 }
 
-void AGCChaseTargetBase::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-    if (Cast<AGCPlayerCharacter>(OtherActor)) {
-        UE_LOG(LogTemp, Warning, TEXT("END Overlapping!"));
-    }
-}
 
 // Called every frame
 void AGCChaseTargetBase::Tick(float DeltaTime)

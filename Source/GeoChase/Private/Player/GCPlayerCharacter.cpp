@@ -40,21 +40,7 @@ void AGCPlayerCharacter::Server_DoAction_Implementation()
         if (SpawnedChaseTarget) {
             SpawnedChaseTarget->GetBaseMesh()->AddImpulse(PlayerCamera->GetForwardVector() * 1000.f);
             SpawnedChaseTarget->FinishSpawning(SpawnTransform);
-
-            //
-            FTimerHandle DestroyTimerHandle;
-            GetWorldTimerManager().SetTimer(DestroyTimerHandle, //
-                FTimerDelegate::CreateLambda([SpawnedChaseTarget]()
-                    {
-                        SpawnedChaseTarget->Destroy();
-                    }), // 
-                3.0f, // 
-                false);
-
         }
-
-
-
     }
 }
 
@@ -72,7 +58,6 @@ void AGCPlayerCharacter::BeginPlay()
         {
             ChaseTargetMesh->SetStaticMesh(ChaseTargetMeshComponent->GetStaticMesh());
             ChaseTargetMesh->SetRelativeScale3D(FVector(ChaseTargetMeshComponent->GetRelativeScale3D()));
-
         }
 
         GCGameState->GetCanDoAction() ? ChaseTargetMesh->SetVisibility(true) : ChaseTargetMesh->SetVisibility(false);

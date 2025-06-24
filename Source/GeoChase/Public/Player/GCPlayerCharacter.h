@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interfaces/GCPlayerInterface.h"
+
 
 //  
 #include "GCPlayerCharacter.generated.h"
@@ -12,7 +14,7 @@ class AGCPlayerController;
 class AGCChaseTargetBase;
 
 UCLASS()
-class GEOCHASE_API AGCPlayerCharacter : public ACharacter
+class GEOCHASE_API AGCPlayerCharacter : public ACharacter, public IGCPlayerInterface
 {
     friend AGCPlayerController;
 
