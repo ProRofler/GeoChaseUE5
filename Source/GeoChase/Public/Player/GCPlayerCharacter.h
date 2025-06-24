@@ -9,6 +9,7 @@
 #include "GCPlayerCharacter.generated.h"
 
 class AGCPlayerController;
+class AGCChaseTargetBase;
 
 UCLASS()
 class GEOCHASE_API AGCPlayerCharacter : public ACharacter
@@ -26,8 +27,11 @@ public:    // Sets default values for this character's properties
 protected:
     virtual void BeginPlay() override;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SK Player camera")
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "GC Player camera")
     TObjectPtr<class UCameraComponent> PlayerCamera;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GC Chase target")
+    TSubclassOf<AGCChaseTargetBase> ChaseTargetClass;
 
 public:
     virtual void Tick(float DeltaTime) override;

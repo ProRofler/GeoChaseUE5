@@ -18,6 +18,9 @@ class GEOCHASE_API AGCChaseTargetBase : public AActor
 public:
     AGCChaseTargetBase();
 
+    UFUNCTION(BlueprintPure)
+    FORCEINLINE UStaticMeshComponent* GetBaseMesh() const { return BaseMesh; }
+
 protected:
     virtual void BeginPlay() override;
 

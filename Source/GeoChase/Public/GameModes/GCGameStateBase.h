@@ -22,6 +22,10 @@ public:
     UFUNCTION(BlueprintCallable)
     void TryAction(APlayerController* RequestingPlayer);
 
+    UFUNCTION(BlueprintPure)
+    FORCEINLINE bool GetCanDoAction() const { return bCanDoAction; }
+
+
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 protected:
