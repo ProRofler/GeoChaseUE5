@@ -57,9 +57,13 @@ void AGCGameStateBase::ResetAction(AController* RequestingController)
 
 void AGCGameStateBase::Server_UpdateLeaderboard_Implementation(FName Name, int32 Score)
 {
-    /* if (Leaderboard.Find(Name)) {
-         Leaderboard[Name] += Score;
-     }*/
+    for (auto& data : Leaderboard)
+    {
+        if (data.Name == Name) {
+            data.Score += Score;
+            break;
+        }
+    }
 }
 
 void AGCGameStateBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
