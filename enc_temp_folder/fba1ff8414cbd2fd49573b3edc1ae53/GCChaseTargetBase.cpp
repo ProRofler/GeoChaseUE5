@@ -3,7 +3,7 @@
 
 #include "Gameplay/GCChaseTargetBase.h"
 #include "Components/SphereComponent.h"
-#include "Characters/GCNpcCharacter.h"
+#include "Player/GCPlayerCharacter.h"
 #include "GameModes/GCGameStateBase.h"
 
 
@@ -47,8 +47,8 @@ void AGCChaseTargetBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent
 
     if (auto GCGameState = GetWorld()->GetGameState<AGCGameStateBase>()) {
 
-        if (auto Character = Cast<AGCNpcCharacter>(OtherActor)) {
-            //UE_LOG(LogTemp, Warning, TEXT("Overlapping!"));
+        if (auto Character = Cast<AGCPlayerCharacter>(OtherActor)) {
+            UE_LOG(LogTemp, Warning, TEXT("Overlapping!"));
 
             GCGameState->ResetAction(Character->GetController());
             Destroy();
