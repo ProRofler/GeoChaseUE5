@@ -8,17 +8,6 @@
 //
 #include "GCGameModeBase.generated.h"
 
-USTRUCT()
-struct FGCChaseTargetData {
-    GENERATED_BODY()
-
-    UPROPERTY(EditDefaultsOnly, Category = "Chase target")
-    UStaticMesh* ChaseMesh;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Chase target")
-    int32 Score = 3;
-};
-
 UCLASS()
 class GEOCHASE_API AGCGameModeBase : public AGameModeBase
 {
@@ -26,9 +15,5 @@ class GEOCHASE_API AGCGameModeBase : public AGameModeBase
 
 public:
     AGCGameModeBase();
-
-protected:
-    UPROPERTY(EditDefaultsOnly, Category = "GC Game Settings")
-    TArray<FGCChaseTargetData> ChaseTargetData;
 
 };

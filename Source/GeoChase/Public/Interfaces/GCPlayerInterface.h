@@ -21,6 +21,6 @@ class GEOCHASE_API IGCPlayerInterface
 public:
 
     UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "GC Player interface")
-    void SwitchChaseTarget();
+    void NextChaseTarget();
 
 };

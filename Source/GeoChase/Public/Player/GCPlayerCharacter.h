@@ -30,6 +30,9 @@ public:
 
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+    virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+
 protected:
     virtual void BeginPlay() override;
 
@@ -37,14 +40,19 @@ protected:
     TObjectPtr<class UCameraComponent> PlayerCamera;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GC Chase target")
-    TSubclassOf<AGCChaseTargetBase> ChaseTargetClass;
+    TArray<TSubclassOf<AGCChaseTargetBase>> ChaseTargetClasses;
+
+    virtual void NextChaseTarget_Implementation() override;
 
 private:
     UPROPERTY()
     TObjectPtr<class UStaticMeshComponent> ChaseTargetMesh;
 
+    UPROPERTY(Replicated)
+    int32 CurrentChaseTargetClassIndex = 0;
+
     UFUNCTION()
     void HandleChaseTargetMeshVisibility(const bool NewVisibility);
 
-
+    void UpdateChaseTargetMesh();
 };
