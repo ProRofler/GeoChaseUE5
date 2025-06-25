@@ -30,6 +30,9 @@ protected:
     UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "GC Chase target settings")
     TObjectPtr<UStaticMeshComponent> BaseMesh;
 
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "GC Chase target settings")
+    uint8 Score = 1;
+
     TObjectPtr<USphereComponent> CollisionSphere;
 
 private:

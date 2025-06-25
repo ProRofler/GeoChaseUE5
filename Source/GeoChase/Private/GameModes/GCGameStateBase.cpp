@@ -3,6 +3,8 @@
 
 #include "GameModes/GCGameStateBase.h"
 #include "Player/GCPlayerCharacter.h"
+#include "Kismet/GameplayStatics.h"
+#include "Characters/GCNpcCharacter.h"
 
 #include "Net/UnrealNetwork.h"
 
@@ -11,7 +13,7 @@
 AGCGameStateBase::AGCGameStateBase()
 {
     bReplicates = true;
-    NetUpdateFrequency = 100.f;
+    NetUpdateFrequency = 10.f;
 }
 
 
@@ -19,7 +21,7 @@ void AGCGameStateBase::Multicast_MakeAction_Implementation(APlayerController* Re
 {
 
     if (RequestingPlayer && GEngine && RequestingPlayer->IsLocalController()) {
-        GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, FString::Printf(TEXT("%s action!"), *RequestingPlayer->GetCharacter()->GetName()));
+        //GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, FString::Printf(TEXT("%s action!"), *RequestingPlayer->GetCharacter()->GetName()));
 
         if (auto PlayerCharacter = Cast<AGCPlayerCharacter>(RequestingPlayer->GetCharacter()))
         {
@@ -33,10 +35,10 @@ void AGCGameStateBase::TryAction(APlayerController* RequestingPlayer)
 {
 
     if (!bCanDoAction) {
-        if (GEngine && RequestingPlayer && RequestingPlayer->IsLocalController()) {
+        /*if (GEngine && RequestingPlayer && RequestingPlayer->IsLocalController()) {
             GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, FString::Printf(TEXT("%s wait for cooldown!"), *RequestingPlayer->GetCharacter()->GetName()));
 
-        }
+        }*/
         return;
     }
 
@@ -53,17 +55,54 @@ void AGCGameStateBase::ResetAction(AController* RequestingController)
     SetCanDoAction(true);
 }
 
+void AGCGameStateBase::Server_UpdateLeaderboard_Implementation(FName Name, int32 Score)
+{
+    /* if (Leaderboard.Find(Name)) {
+         Leaderboard[Name] += Score;
+     }*/
+}
+
 void AGCGameStateBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
     DOREPLIFETIME(AGCGameStateBase, bCanDoAction);
+    DOREPLIFETIME(AGCGameStateBase, Leaderboard);
 }
 
 void AGCGameStateBase::Tick(float DeltaTime)
 {
-    if (GEngine) {
+    Super::Tick(DeltaTime);
+
+    /*if (GEngine) {
         GEngine->AddOnScreenDebugMessage(25, 2.f, FColor::Green, FString::Printf(TEXT("Can do action -- %b"), bCanDoAction));
+    }*/
+
+}
+
+void AGCGameStateBase::BeginPlay()
+{
+
+    Super::BeginPlay();
+
+    if (HasAuthority() && GetWorld()) {
+
+        TArray<AActor*> FoundNPC;
+        UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGCNpcCharacter::StaticClass(), FoundNPC);
+
+        if (!FoundNPC.IsEmpty())
+        {
+            for (auto& NPC : FoundNPC)
+            {
+                FGCLeaderboardData data;
+                data.Name = *GetNameSafe(NPC);
+                data.Score = 0;
+
+                Leaderboard.Add(data);
+            }
+
+        }
+
     }
 
 }
