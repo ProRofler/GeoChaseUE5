@@ -59,6 +59,17 @@ void AGCPlayerCharacter::BeginPlay()
     }
 }
 
+void AGCPlayerCharacter::Server_SetCurrentChaseTargetClassIndex_Implementation(int32 NewIndex)
+{
+    CurrentChaseTargetClassIndex = NewIndex;
+}
+
+
+void AGCPlayerCharacter::OnRep_CurrentChaseTargetClassIndex()
+{
+    UpdateChaseTargetMesh();
+}
+
 void AGCPlayerCharacter::HandleChaseTargetMeshVisibility(const bool NewVisibility)
 {
     ChaseTargetMesh->SetVisibility(NewVisibility);
@@ -66,17 +77,19 @@ void AGCPlayerCharacter::HandleChaseTargetMeshVisibility(const bool NewVisibilit
 
 void AGCPlayerCharacter::NextChaseTarget_Implementation()
 {
-    if (!GetWorld() || ChaseTargetClasses.IsEmpty()) return;
+    if (!GetWorld() || ChaseTargetClasses.IsEmpty() || !IsLocallyControlled()) return;
 
-    CurrentChaseTargetClassIndex = ++CurrentChaseTargetClassIndex % ChaseTargetClasses.Num();
+    const int32 newIndex = (CurrentChaseTargetClassIndex + 1) % ChaseTargetClasses.Num();
+    Server_SetCurrentChaseTargetClassIndex(newIndex);
 
-    UpdateChaseTargetMesh();
-
+    if (HasAuthority()) {
+        UpdateChaseTargetMesh();
+    }
 }
 
 void AGCPlayerCharacter::UpdateChaseTargetMesh()
 {
-    if (!GetWorld() || ChaseTargetClasses.IsEmpty()) return;
+    if (!GetWorld() || ChaseTargetClasses.IsEmpty() || CurrentChaseTargetClassIndex >= ChaseTargetClasses.Num()) return;
 
     if (auto ChaseTargetMeshComponent = ChaseTargetClasses[CurrentChaseTargetClassIndex]->GetDefaultObject<AGCChaseTargetBase>()->GetBaseMesh())
     {

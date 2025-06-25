@@ -48,8 +48,14 @@ private:
     UPROPERTY()
     TObjectPtr<class UStaticMeshComponent> ChaseTargetMesh;
 
-    UPROPERTY(Replicated)
+    UPROPERTY(ReplicatedUsing = OnRep_CurrentChaseTargetClassIndex)
     int32 CurrentChaseTargetClassIndex = 0;
+
+    UFUNCTION()
+    void OnRep_CurrentChaseTargetClassIndex();
+
+    UFUNCTION(Server, Reliable)
+    void Server_SetCurrentChaseTargetClassIndex(int32 NewIndex);
 
     UFUNCTION()
     void HandleChaseTargetMeshVisibility(const bool NewVisibility);
