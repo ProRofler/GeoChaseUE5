@@ -33,7 +33,7 @@ void AGCChaseTargetBase::BeginPlay()
     Super::BeginPlay();
 
     if (CollisionSphere && BaseMesh) {
-        CollisionSphere->SetSphereRadius(BaseMesh->GetStaticMesh()->GetBounds().BoxExtent.Size() * 3.f);
+        CollisionSphere->SetSphereRadius(BaseMesh->GetStaticMesh()->GetBounds().BoxExtent.Size() * 1.5f);
 
         CollisionSphere->OnComponentBeginOverlap.AddDynamic(this, &AGCChaseTargetBase::OnBeginOverlap);
 
@@ -48,7 +48,7 @@ void AGCChaseTargetBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent
     if (auto GCGameState = GetWorld()->GetGameState<AGCGameStateBase>()) {
 
         if (auto Character = Cast<AGCNpcCharacter>(OtherActor)) {
-            GCGameState->Server_UpdateLeaderboard(Character->NameID, Score);
+            GCGameState->Server_UpdateLeaderboard(*GetNameSafe(Character), Score);
             GCGameState->ResetAction(Character->GetController());
 
             Destroy();

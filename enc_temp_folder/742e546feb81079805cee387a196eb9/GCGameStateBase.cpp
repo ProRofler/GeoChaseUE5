@@ -114,9 +114,7 @@ void AGCGameStateBase::BeginPlay()
             for (auto& NPC : FoundNPC)
             {
                 FGCLeaderboardData data;
-                FName NPCName = Cast<AGCNpcCharacter>(NPC) ? Cast<AGCNpcCharacter>(NPC)->NameID : "Error";
-
-                data.Name = NPCName;
+                data.Name = *GetNameSafe(NPC);
                 data.Score = 0;
 
                 Leaderboard.Add(data);

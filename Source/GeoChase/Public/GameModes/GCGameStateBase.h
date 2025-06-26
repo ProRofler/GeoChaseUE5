@@ -9,6 +9,7 @@
 #include "GCGameStateBase.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBooleanChanged, bool, NewValue);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSessionEnded);
 
 class AGCNpcCharacter;
 
@@ -36,6 +37,12 @@ public:
 
     UPROPERTY(BlueprintAssignable)
     FOnBooleanChanged OnCanDoActionChanged;
+
+    UPROPERTY(BlueprintAssignable)
+    FOnSessionEnded OnSessionEnded;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category = "Game settings")
+    float MatchTime = 20.f;
 
     UFUNCTION(BlueprintCallable)
     void TryAction(APlayerController* RequestingPlayer);
@@ -81,5 +88,8 @@ private:
 
     UFUNCTION()
     void OnRep_bCanDoAction(bool OldBCanDoAction);
+
+
+    FTimerHandle MatchTimerHandle;
 
 };
