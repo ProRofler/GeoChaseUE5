@@ -16,8 +16,17 @@ class GEOCHASE_API AGCNpcCharacter : public ACharacter
 public:
     AGCNpcCharacter();
 
+    UPROPERTY(BlueprintReadOnly, Replicated)
+    FName NameID;
+
+    static int32 NpcCounter;
+
+    virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+
 protected:
     virtual void BeginPlay() override;
+    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:
     virtual void Tick(float DeltaTime) override;

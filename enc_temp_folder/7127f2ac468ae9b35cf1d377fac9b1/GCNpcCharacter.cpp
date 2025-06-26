@@ -41,10 +41,6 @@ void AGCNpcCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
     Super::EndPlay(EndPlayReason);
 
     --NpcCounter;
-
-    if (NpcCounter < 0) {
-        NpcCounter = 0;
-    }
 }
 
 void AGCNpcCharacter::Tick(float DeltaTime)
