@@ -73,6 +73,8 @@ private:
 
     void SetCanDoAction(const bool bCanDoAction);
 
+    void SortLeaderboard();
+
     UFUNCTION()
     void OnRep_bCanDoAction(bool OldBCanDoAction);
 

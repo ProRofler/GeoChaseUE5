@@ -8,6 +8,8 @@
 
 #include "Net/UnrealNetwork.h"
 
+#include "Algo/Sort.h"
+
 
 
 AGCGameStateBase::AGCGameStateBase()
@@ -57,6 +59,8 @@ void AGCGameStateBase::ResetAction(AController* RequestingController)
 
 void AGCGameStateBase::Server_UpdateLeaderboard_Implementation(FName Name, int32 Score)
 {
+    if (Leaderboard.IsEmpty()) return;
+
     for (auto& data : Leaderboard)
     {
         if (data.Name == Name) {
@@ -64,6 +68,7 @@ void AGCGameStateBase::Server_UpdateLeaderboard_Implementation(FName Name, int32
             break;
         }
     }
+    SortLeaderboard();
 }
 
 void AGCGameStateBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -122,6 +127,14 @@ void AGCGameStateBase::SetCanDoAction(const bool CanDoAction)
     }
 
 
+}
+
+void AGCGameStateBase::SortLeaderboard()
+{
+    Algo::Sort(Leaderboard, [](const FGCLeaderboardData& A, const FGCLeaderboardData& B)
+        {
+            return A.Score > B.Score;
+        });
 }
 
 void AGCGameStateBase::OnRep_bCanDoAction(bool OldBCanDoAction)
