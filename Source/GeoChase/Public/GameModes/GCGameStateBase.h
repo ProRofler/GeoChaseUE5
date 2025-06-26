@@ -60,6 +60,10 @@ public:
     UFUNCTION(Server, Reliable, BlueprintCallable)
     void Server_UpdateLeaderboard(FName Name, int32 Score);
 
+
+    UFUNCTION(BlueprintPure)
+    AActor* FindFurthestActor(FVector Origin, const TArray<AActor*>& ActorsToCheck);
+
     UFUNCTION(BlueprintPure)
     FORCEINLINE TArray<FGCLeaderboardData>& GetLeaderboard() { return Leaderboard; }
 

@@ -56,7 +56,6 @@ void AGCChaseTargetBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent
     }
 }
 
-
 // Called every frame
 void AGCChaseTargetBase::Tick(float DeltaTime)
 {

@@ -80,6 +80,27 @@ void AGCGameStateBase::Server_UpdateLeaderboard_Implementation(FName Name, int32
     SortLeaderboard();
 }
 
+AActor* AGCGameStateBase::FindFurthestActor(FVector Origin, const TArray<AActor*>& ActorsToCheck)
+{
+    AActor* FurthestActor = nullptr;
+    float DistanceFromNearestActor = TNumericLimits<float>::Min();
+
+    for (AActor* ActorToCheck : ActorsToCheck)
+    {
+        if (ActorToCheck)
+        {
+            const float DistanceFromActorToCheck = (Origin - ActorToCheck->GetActorLocation()).SizeSquared();
+            if (DistanceFromActorToCheck > DistanceFromNearestActor)
+            {
+                FurthestActor = ActorToCheck;
+                DistanceFromNearestActor = DistanceFromActorToCheck;
+            }
+        }
+    }
+
+    return FurthestActor;
+}
+
 void AGCGameStateBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
