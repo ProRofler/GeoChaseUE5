@@ -46,6 +46,10 @@ public:
     UFUNCTION(BlueprintPure)
     FORCEINLINE bool GetCanDoAction() const { return bCanDoAction; }
 
+    UFUNCTION(BlueprintPure)
+    bool DoesHaveLeader() const;
+
+
     UFUNCTION(Server, Reliable, BlueprintCallable)
     void Server_UpdateLeaderboard(FName Name, int32 Score);
 

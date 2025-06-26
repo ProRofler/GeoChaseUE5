@@ -57,6 +57,15 @@ void AGCGameStateBase::ResetAction(AController* RequestingController)
     SetCanDoAction(true);
 }
 
+bool AGCGameStateBase::DoesHaveLeader() const
+{
+
+    if (Leaderboard.IsEmpty() || Leaderboard.Num() < 2) return false;
+
+    return Leaderboard[0].Score > Leaderboard[1].Score;
+
+}
+
 void AGCGameStateBase::Server_UpdateLeaderboard_Implementation(FName Name, int32 Score)
 {
     if (Leaderboard.IsEmpty()) return;
