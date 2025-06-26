@@ -48,8 +48,8 @@ void AGCChaseTargetBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent
     if (auto GCGameState = GetWorld()->GetGameState<AGCGameStateBase>()) {
 
         if (auto Character = Cast<AGCNpcCharacter>(OtherActor)) {
-            GCGameState->Server_UpdateLeaderboard(*GetNameSafe(Character), Score);
             GCGameState->ResetAction(Character->GetController());
+            GCGameState->Server_UpdateLeaderboard(*GetNameSafe(Character), Score);
 
             Destroy();
         }
