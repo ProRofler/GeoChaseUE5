@@ -125,25 +125,33 @@ void AGCGameStateBase::BeginPlay()
 
     Super::BeginPlay();
 
-    if (HasAuthority() && GetWorld()) {
-
-        TArray<AActor*> FoundNPC;
-        UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGCNpcCharacter::StaticClass(), FoundNPC);
-
-        if (!FoundNPC.IsEmpty())
-        {
-            for (auto& NPC : FoundNPC)
+    if (HasAuthority() && GetWorld())
+    {
+        //Dirty hack to ensure npc names are assigned
+        FTimerHandle ReadyTimer;
+        GetWorldTimerManager().SetTimer(ReadyTimer, [this]()
             {
-                FGCLeaderboardData data;
-                FName NPCName = Cast<AGCNpcCharacter>(NPC) ? Cast<AGCNpcCharacter>(NPC)->NameID : "Error";
+                TArray<AActor*> FoundNPC;
+                UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGCNpcCharacter::StaticClass(), FoundNPC);
 
-                data.Name = NPCName;
-                data.Score = 0;
+                if (!FoundNPC.IsEmpty())
+                {
+                    for (auto& NPC : FoundNPC)
+                    {
+                        FGCLeaderboardData data;
+                        FName NPCName = Cast<AGCNpcCharacter>(NPC) ? Cast<AGCNpcCharacter>(NPC)->NameID : "Error";
 
-                Leaderboard.Add(data);
-            }
+                        data.Name = NPCName;
+                        data.Score = 0;
 
-        }
+                        Leaderboard.Add(data);
+                    }
+
+                }
+
+            }, 0.1f, false);
+
+
 
         // Start session timer
         GetWorldTimerManager().SetTimer(MatchTimerHandle, [this]()
@@ -167,10 +175,10 @@ void AGCGameStateBase::BeginPlay()
                 }
             }, 1.f, true);
 
-
     }
-
 }
+
+
 
 void AGCGameStateBase::SetCanDoAction(const bool CanDoAction)
 {
