@@ -41,7 +41,7 @@ public:
     UPROPERTY(BlueprintAssignable)
     FOnSessionEnded OnSessionEnded;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category = "Game settings")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, ReplicatedUsing = OnRep_MatchTime, Category = "Game settings")
     float MatchTime = 20.f;
 
     UFUNCTION(BlueprintCallable)
@@ -92,6 +92,9 @@ private:
 
     UFUNCTION()
     void OnRep_bCanDoAction(bool OldBCanDoAction);
+
+    UFUNCTION()
+    void OnRep_MatchTime(float OldTime);
 
 
     FTimerHandle MatchTimerHandle;

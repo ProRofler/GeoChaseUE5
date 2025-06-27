@@ -167,11 +167,6 @@ void AGCGameStateBase::BeginPlay()
                     GetWorldTimerManager().ClearTimer(MatchTimerHandle);
                     SetCanDoAction(false);
 
-                    if (OnSessionEnded.IsBound())
-                    {
-                        OnSessionEnded.Broadcast();
-                    }
-
                     UE_LOG(LogTemp, Log, TEXT("Match finished"));
                 }
             }, 1.f, true);
