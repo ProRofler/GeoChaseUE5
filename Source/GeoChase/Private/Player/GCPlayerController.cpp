@@ -42,7 +42,7 @@ void AGCPlayerController::ControllerSetup()
 
 void AGCPlayerController::Move(const FInputActionValue& Value)
 {
-    if (Value.IsNonZero())
+    if (Value.IsNonZero() && GetPawn())
     {
         const FVector2D MovingAxis = Value.Get<FVector2D>();
 
@@ -53,7 +53,7 @@ void AGCPlayerController::Move(const FInputActionValue& Value)
 
 void AGCPlayerController::Look(const FInputActionValue& Value)
 {
-    if (Value.IsNonZero())
+    if (Value.IsNonZero() && GetPawn())
     {
         const auto LookingAxisX = Value.Get<FVector2D>().X;
         const auto LookingAxisY = Value.Get<FVector2D>().Y * -1;
